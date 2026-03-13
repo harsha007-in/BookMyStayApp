@@ -1,127 +1,46 @@
-import java.io.*;
-import java.util.*;
-
 /**
  * =========================================================
- * CLASS - RoomInventory
- * =========================================================
- */
-
-class RoomInventory {
-
-    private Map<String, Integer> roomAvailability;
-
-    public RoomInventory() {
-        roomAvailability = new HashMap<>();
-        roomAvailability.put("Single", 5);
-        roomAvailability.put("Double", 3);
-        roomAvailability.put("Suite", 2);
-    }
-
-    public Map<String, Integer> getRoomAvailability() {
-        return roomAvailability;
-    }
-
-    public void updateAvailability(String roomType, int count) {
-        roomAvailability.put(roomType, count);
-    }
-}
-
-/**
- * =========================================================
- * CLASS - FilePersistenceService
+ * MAIN CLASS - UseCase1HotelBookingApp
  * =========================================================
  *
- * Use Case 12: Data Persistence & System Recovery
+ * Use Case 1: Application Entry & Welcome Message
+ *
+ * Description:
+ * This class represents the entry point of the
+ * Hotel Booking Management System.
+ *
+ * At this stage, the application:
+ * - Starts execution from the main() method
+ * - Displays a welcome message to the user
+ * - Confirms that the system has started successfully
+ *
+ * No business logic, data structures, or user input
+ * is implemented in this use case.
+ *
+ * The goal is to establish a clear and predictable
+ * application startup point.
+ *
+ * @author Developer
+ * @version 1.0
  */
 
-class FilePersistenceService {
+public class BookMyStayApp {
 
     /**
-     * Save inventory to file
+     * Application entry point.
+     *
+     * This method is the first method executed
+     * when the program is launched by the JVM.
+     *
+     * @param args Command-line arguments
      */
-    public void saveInventory(RoomInventory inventory, String filePath) {
-
-        try (FileWriter writer = new FileWriter(filePath)) {
-
-            for (Map.Entry<String, Integer> entry :
-                    inventory.getRoomAvailability().entrySet()) {
-
-                writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
-            }
-
-            System.out.println("Inventory saved successfully.");
-
-        } catch (IOException e) {
-            System.out.println("Error saving inventory.");
-        }
-    }
-
-    /**
-     * Load inventory from file
-     */
-    public void loadInventory(RoomInventory inventory, String filePath) {
-
-        File file = new File(filePath);
-
-        if (!file.exists()) {
-            System.out.println("No valid inventory data found. Starting fresh.");
-            return;
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-
-                String[] parts = line.split("=");
-
-                if (parts.length == 2) {
-                    String roomType = parts[0];
-                    int count = Integer.parseInt(parts[1]);
-
-                    inventory.updateAvailability(roomType, count);
-                }
-            }
-
-            System.out.println("Inventory loaded successfully.");
-
-        } catch (IOException e) {
-            System.out.println("Error loading inventory.");
-        }
-    }
-}
-
-/**
- * =========================================================
- * MAIN CLASS - UseCase12DataPersistenceRecovery
- * =========================================================
- */
-
-public class BookMyStayApp{
-
     public static void main(String[] args) {
 
-        System.out.println("System Recovery");
+        // Display welcome message
+        System.out.println("Welcome to the Hotel Booking Management System");
 
-        RoomInventory inventory = new RoomInventory();
-        FilePersistenceService persistenceService = new FilePersistenceService();
+        // Confirm system initialization
+        System.out.println("System initialized successfully.");
 
-        String filePath = "inventory.txt";
-
-        // Load saved inventory
-        persistenceService.loadInventory(inventory, filePath);
-
-        System.out.println("\nCurrent Inventory:");
-
-        for (Map.Entry<String, Integer> entry :
-                inventory.getRoomAvailability().entrySet()) {
-
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-
-        // Save inventory before shutdown
-        persistenceService.saveInventory(inventory, filePath);
     }
 }
