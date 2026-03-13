@@ -1,43 +1,24 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * =========================================================
  * ABSTRACT CLASS - Room
  * =========================================================
- *
- * Use Case 2: Basic Room Types & Static Availability
- *
- * Description:
- * This abstract class represents a generic hotel room.
- *
- * It models attributes that are intrinsic to a room type
- * and remain constant regardless of availability.
- *
- * Inventory-related concerns are intentionally excluded.
- *
- * @version 2.1
  */
 
 abstract class Room {
 
-    /** Number of beds available in the room. */
     protected int numberOfBeds;
-
-    /** Total size of the room in square feet. */
     protected int squareFeet;
-
-    /** Price charged per night for this room type. */
     protected double pricePerNight;
 
-    /**
-     * Constructor used by child classes to
-     * initialize common room attributes.
-     */
     public Room(int numberOfBeds, int squareFeet, double pricePerNight) {
         this.numberOfBeds = numberOfBeds;
         this.squareFeet = squareFeet;
         this.pricePerNight = pricePerNight;
     }
 
-    /** Displays room details */
     public void displayRoomDetails() {
         System.out.println("Beds: " + numberOfBeds);
         System.out.println("Size: " + squareFeet + " sqft");
@@ -86,42 +67,80 @@ class SuiteRoom extends Room {
 
 /**
  * =========================================================
- * MAIN CLASS -BookMyStayApp
+ * CLASS - RoomInventory
  * =========================================================
  *
- * Use Case 2: Basic Room Types & Static Availability
+ * Use Case 3: Centralized Room Inventory Management
+ */
+
+class RoomInventory {
+
+    /**
+     * Stores available room count for each room type
+     * Key -> Room type name
+     * Value -> Available room count
+     */
+    private Map<String, Integer> roomAvailability;
+
+    /** Constructor initializes the inventory */
+    public RoomInventory() {
+        roomAvailability = new HashMap<>();
+        initializeInventory();
+    }
+
+    /** Initializes room availability */
+    private void initializeInventory() {
+
+        roomAvailability.put("Single", 5);
+        roomAvailability.put("Double", 3);
+        roomAvailability.put("Suite", 2);
+    }
+
+    /** Returns availability map */
+    public Map<String, Integer> getRoomAvailability() {
+        return roomAvailability;
+    }
+
+    /** Updates room availability */
+    public void updateAvailability(String roomType, int count) {
+        roomAvailability.put(roomType, count);
+    }
+}
+
+/**
+ * =========================================================
+ * MAIN CLASS - UseCase3InventorySetup
+ * =========================================================
  */
 
 public class BookMyStayApp {
 
     public static void main(String[] args) {
 
-        // Create room objects
+        RoomInventory inventory = new RoomInventory();
+
         Room singleRoom = new SingleRoom();
         Room doubleRoom = new DoubleRoom();
         Room suiteRoom = new SuiteRoom();
 
-        // Static availability
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        Map<String, Integer> availability = inventory.getRoomAvailability();
 
-        System.out.println("Hotel Room Initialization\n");
+        System.out.println("Hotel Room Inventory Status\n");
 
         System.out.println("Single Room:");
         singleRoom.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable);
+        System.out.println("Available Rooms: " + availability.get("Single"));
 
         System.out.println();
 
         System.out.println("Double Room:");
         doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable);
+        System.out.println("Available Rooms: " + availability.get("Double"));
 
         System.out.println();
 
         System.out.println("Suite Room:");
         suiteRoom.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        System.out.println("Available Rooms: " + availability.get("Suite"));
     }
 }
